@@ -1,9 +1,13 @@
 import React from "react";
+import { withRouter } from "react-router"; // HOC- function that takes a component as an argument and returns you a modified component
 
 // going to use a functional component because we're not going to hold any state
 import "./menu-item.styles.scss";
-const MenuItem = ({ title, imageUrl, size }) => (
-  <div className={`${size} menu-item`}>
+const MenuItem = ({ title, imageUrl, size, history, linkUrl, match }) => (
+  <div
+    className={`${size} menu-item`}
+    onClick={() => history.push(`${match.url}${linkUrl}`)}
+  >
     <div
       className="background-image"
       style={{
@@ -17,4 +21,7 @@ const MenuItem = ({ title, imageUrl, size }) => (
   </div>
 );
 
-export default MenuItem;
+export default withRouter(MenuItem);
+// const MenuItem2 = MenuItem;
+// export default MenuItem;
+// const ShowTheLocationWithRouter = withRouter(MenuItem);
