@@ -33,7 +33,8 @@ class App extends React.Component {
         
         userRef.onSnapshot(snapShot => {
           // document snapshot object allows us to check if a document exists at this query using the .exists property which returns a boolean
-          console.log(snapShot.data());
+          console.log("Current User",snapShot.data());
+
 
           this.setState({
             currentUser: {
@@ -45,7 +46,7 @@ class App extends React.Component {
         
         });
 
-        console.log("STATE" , this.state);
+        // console.log("Current User" , this.state);
       }// end if
       else{
         this.setState({currentUser: userAuth});
