@@ -3,26 +3,21 @@ import { BrowserRouter, Switch, Routes, Route } from "react-router-dom";
 import "./App.css";
 import HomePage from "./pages/homepage/homepage.component";
 import ShopPage from "./pages/shop/shop.component";
-
+import {connect} from 'react-redux';
 import Header from "./components/header/header.component";
 import SignInAndSignUp from "./pages/sign-in-and-sign-up/sign-in-and-sign-up.component";
 import {auth ,createUserProfileDocument} from './firebase/firebase.utils'
 
 
+import {setCurrentUser} from './redux/user/user.actions';
+
 class App extends React.Component {
-
-  constructor(){
-    super();
-
-    this.state = {
-      constructor: null
-    }
-  }
-
 
   unsubscribeFromAuth = null; 
 
   componentDidMount() {
+
+    const {setCurrentUser} = this.props; 
     // when we call fetch it won't call it again unless the page is refreshed
     //or signed up again cause thats the only way this function will go gain
 
@@ -33,10 +28,10 @@ class App extends React.Component {
         
         userRef.onSnapshot(snapShot => {
           // document snapshot object allows us to check if a document exists at this query using the .exists property which returns a boolean
-          console.log("Current User",snapShot.data());
+          // console.log("Current User",snapShot.data());
 
 
-          this.setState({
+          setCurrentUser({
             currentUser: {
               id: snapShot.id,
                   ...snapShot.data()
@@ -49,15 +44,17 @@ class App extends React.Component {
         // console.log("Current User" , this.state);
       }// end if
       else{
-        this.setState({currentUser: userAuth});
+        // this.setState({currentUser: userAuth});
+        setCurrentUser(userAuth);
       }
       createUserProfileDocument(userAuth);
       // console.log(user);
-    }) // method from the auth library
+    }); // method from the auth library
   }// end component did mount
 
 
   componentWillUnmount() {
+    // Look up this Life Cycl eMethod again
     this.unsubscribeFromAuth();
   }
 
@@ -65,7 +62,7 @@ class App extends React.Component {
     return (
       <div>
         {/* Routes Acts As Switch */}
-        <Header currentUser={this.state.currentUser}/>
+        <Header />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route path="/shop" component={ShopPage} />
@@ -79,4 +76,12 @@ class App extends React.Component {
 
 }// end class
 
-export default App;
+// MapDispatchToProps
+
+
+const mapDispatchToProps = dispatch => ({
+  setCurrentUser: user => dispatch(setCurrentUser(user))
+});
+
+
+export default connect(null, mapDispatchToProps)(App);
